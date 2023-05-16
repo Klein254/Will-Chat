@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "657899527435",
+    "project_id": "will-chat-c0a29",
+    "storage_bucket": "will-chat-c0a29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657899527435:android:babd500b7d67cfc776960e",
+        "android_client_info": {
+          "package_name": "com.example.medilink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "657899527435-fmsrhnkgnabe8bhc2vdhiv0vjj624qqb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0ya2dsDvorCb2orAeS6m8Be2rOFW8t24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "657899527435-fmsrhnkgnabe8bhc2vdhiv0vjj624qqb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
