@@ -13,14 +13,8 @@ import com.example.medilink.models.ChatMessage
 import com.example.medilink.models.User
 import com.example.medilink.utilities.Constants
 import com.example.medilink.utilities.PreferenceManager
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.messaging.FirebaseMessaging
-import java.util.Collections
 
 class MainActivity : BaseActivity(), ConversionListener {
     private var binding: ActivityMainBinding? = null
@@ -135,18 +129,20 @@ class MainActivity : BaseActivity(), ConversionListener {
                         }
                     }
                 }
-                Collections.sort(conversations) { obj1: ChatMessage, obj2: ChatMessage ->
-                    obj2.dateObject.compareTo(
-                        obj1.dateObject
-                    )
-                }
+
                 binding!!.conversationsRecyclerView.smoothScrollToPosition(0)
                 binding!!.conversationsRecyclerView.visibility = View.VISIBLE
                 binding!!.progressBar.visibility = View.GONE
             }
+            conversations?.sortWith(Comparator { obj1: ChatMessage, obj2: ChatMessage ->
+                obj2.dateObject.compareTo(
+                    obj1.dateObject
+                )
+            })
         }
+
     private val token: Unit
-        private get() {
+        get() {
             FirebaseMessaging.getInstance().token.addOnSuccessListener { token: String ->
                 updateToken(
                     token
