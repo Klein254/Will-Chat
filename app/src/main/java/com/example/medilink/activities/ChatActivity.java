@@ -202,7 +202,7 @@ public class ChatActivity extends BaseActivity {
                     preferenceManager.getString(Constants.KEY_USER_ID)
             );
         }
-    };
+    }
 
     private void checkForConversionRemotely(String senderId, String receiverId) {
         database.collection(Constants.KEY_COLLECTION_CONVERSATIONS)
