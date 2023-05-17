@@ -1,17 +1,14 @@
-package com.example.medilink.network;
+package com.example.medilink.network
 
-import java.util.HashMap;
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.HeaderMap
+import retrofit2.http.POST
 
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.HeaderMap;
-import retrofit2.http.POST;
-
-public interface ApiService {
-
+interface ApiService {
     @POST("send")
-    Call<String> sendmessage(
-            @HeaderMap HashMap<String, String> headers,
-            @Body String messageBody
-    );
+    fun sendmessage(
+        @HeaderMap headers: HashMap<String?, String?>?,
+        @Body messageBody: String?
+    ): Call<String?>?
 }

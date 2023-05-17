@@ -1,7 +1,7 @@
-package com.example.medilink.listeners;
+package com.example.medilink.listeners
 
-import com.example.medilink.models.User;
+import com.example.medilink.models.User
 
-public interface ConversionListener {
-    void onConversionClicker(User user);
+interface ConversionListener {
+    fun onConversionClicker(user: User?)
 }

@@ -1,105 +1,82 @@
-package com.example.medilink.adapters;
+package com.example.medilink.adapters
 
-import android.graphics.Bitmap;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.graphics.Bitmap
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.medilink.databinding.ItemContaineSentMessageBinding
+import com.example.medilink.databinding.ItemContainerReceivedMessageBinding
+import com.example.medilink.models.ChatMessage
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.medilink.databinding.ItemContaineSentMessageBinding;
-import com.example.medilink.databinding.ItemContainerReceivedMessageBinding;
-import com.example.medilink.databinding.ItemContainerUserBinding;
-import com.example.medilink.models.ChatMessage;
-
-import java.util.List;
-
-public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private final List<ChatMessage> chatMessages;
-    private final Bitmap receiverProfileImage;
-    private final String senderId;
-
-    public static final int VIEW_TYPE_SENT = 1;
-    public static final int VIEW_TYPE_RECEIVED = 2;
-
-    public ChatAdapter(List<ChatMessage> chatMessages, Bitmap receiverProfileImage, String senderId) {
-        this.chatMessages = chatMessages;
-        this.receiverProfileImage = receiverProfileImage;
-        this.senderId = senderId;
-    }
-
-    @NonNull
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_SENT){
-            return new SentMessageViewHolder(
-                    ItemContaineSentMessageBinding.inflate(
-                            LayoutInflater.from(parent.getContext()),
-                            parent,
-                            false
-                    )
-            );
-        }else return new ReceivedMessageViewHolder(
-                ItemContainerReceivedMessageBinding.inflate(
-                        LayoutInflater.from(parent.getContext()),
-                        parent,
-                        false
+class ChatAdapter(
+    private val chatMessages: List<ChatMessage>,
+    private val receiverProfileImage: Bitmap,
+    private val senderId: String
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_SENT) {
+            SentMessageViewHolder(
+                ItemContaineSentMessageBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-        );
-
+            )
+        } else ReceivedMessageViewHolder(
+            ItemContainerReceivedMessageBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == VIEW_TYPE_SENT) {
-            ((SentMessageViewHolder) holder).setData(chatMessages.get(position));
-        }else {
-            ((ReceivedMessageViewHolder)holder).setData(chatMessages.get(position), receiverProfileImage);
+            (holder as SentMessageViewHolder).setData(chatMessages[position])
+        } else {
+            (holder as ReceivedMessageViewHolder).setData(
+                chatMessages[position],
+                receiverProfileImage
+            )
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return chatMessages.size();
+    override fun getItemCount(): Int {
+        return chatMessages.size
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if(chatMessages.get(position).senderId.equals(senderId)) {
-            return VIEW_TYPE_SENT;
-        }else {
-            return VIEW_TYPE_RECEIVED;
-        }
-    }
-
-    static class SentMessageViewHolder extends RecyclerView.ViewHolder {
-
-        private final ItemContaineSentMessageBinding binding;
-
-        SentMessageViewHolder(ItemContaineSentMessageBinding itemContaineSentMessageBinding) {
-            super(itemContaineSentMessageBinding.getRoot());
-            binding = itemContaineSentMessageBinding;
-        }
-
-        void setData(ChatMessage chatMessage) {
-            binding.txtMessage.setText(chatMessage.message);
-            binding.txtDateTime.setText(chatMessage.dateTime);
+    override fun getItemViewType(position: Int): Int {
+        return if (chatMessages[position].senderId == senderId) {
+            VIEW_TYPE_SENT
+        } else {
+            VIEW_TYPE_RECEIVED
         }
     }
 
-    static class ReceivedMessageViewHolder extends RecyclerView.ViewHolder {
-
-        private final ItemContainerReceivedMessageBinding binding;
-
-        ReceivedMessageViewHolder(ItemContainerReceivedMessageBinding itemContainerReceivedMessageBinding) {
-            super(itemContainerReceivedMessageBinding.getRoot());
-            binding = itemContainerReceivedMessageBinding;
+    internal class SentMessageViewHolder(private val binding: ItemContaineSentMessageBinding) :
+        RecyclerView.ViewHolder(
+            binding.root
+        ) {
+        fun setData(chatMessage: ChatMessage) {
+            binding.txtMessage.text = chatMessage.message
+            binding.txtDateTime.text = chatMessage.dateTime
         }
-        void setData(ChatMessage chatMessage, Bitmap receiverProfileImage) {
-            binding.txtMessage.setText(chatMessage.message);
-            binding.txtDateTime.setText(chatMessage.dateTime);
-            binding.imageProfile.setImageBitmap(receiverProfileImage);
+    }
+
+    internal class ReceivedMessageViewHolder(private val binding: ItemContainerReceivedMessageBinding) :
+        RecyclerView.ViewHolder(
+            binding.root
+        ) {
+        fun setData(chatMessage: ChatMessage, receiverProfileImage: Bitmap?) {
+            binding.txtMessage.text = chatMessage.message
+            binding.txtDateTime.text = chatMessage.dateTime
+            binding.imageProfile.setImageBitmap(receiverProfileImage)
         }
+    }
+
+    companion object {
+        const val VIEW_TYPE_SENT = 1
+        const val VIEW_TYPE_RECEIVED = 2
     }
 }

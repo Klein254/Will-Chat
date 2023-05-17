@@ -1,78 +1,60 @@
-package com.example.medilink.adapters;
+package com.example.medilink.adapters
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.medilink.adapters.RecentConversationAdapter.ConversationViewHolder
+import com.example.medilink.databinding.ItemContainerRecentConversationBinding
+import com.example.medilink.listeners.ConversionListener
+import com.example.medilink.models.ChatMessage
+import com.example.medilink.models.User
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.medilink.databinding.ItemContainerRecentConversationBinding;
-import com.example.medilink.listeners.ConversionListener;
-import com.example.medilink.models.ChatMessage;
-import com.example.medilink.models.User;
-
-import java.util.List;
-
-public class RecentConversationAdapter extends RecyclerView.Adapter<RecentConversationAdapter.ConversationViewHolder>{
-
-    private final List<ChatMessage> chatMessages;
-    private final ConversionListener conversionListener;
-
-    public RecentConversationAdapter(List<ChatMessage> chatMessages, ConversionListener conversionListener) {
-        this.chatMessages = chatMessages;
-        this.conversionListener = conversionListener;
+class RecentConversationAdapter(
+    private val chatMessages: List<ChatMessage>,
+    private val conversionListener: ConversionListener
+) : RecyclerView.Adapter<ConversationViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversationViewHolder {
+        return ConversationViewHolder(
+            ItemContainerRecentConversationBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
-    @NonNull
-    @Override
-    public ConversationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ConversationViewHolder(
-                ItemContainerRecentConversationBinding.inflate(
-                        LayoutInflater.from(parent.getContext()),
-                        parent,
-                        false
-                )
-        );
+    override fun onBindViewHolder(holder: ConversationViewHolder, position: Int) {
+        holder.setData(chatMessages[position])
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ConversationViewHolder holder, int position) {
-        holder.setData(chatMessages.get(position));
+    override fun getItemCount(): Int {
+        return chatMessages.size
     }
 
-    @Override
-    public int getItemCount() {
-        return chatMessages.size();
-    }
-
-    class ConversationViewHolder extends RecyclerView.ViewHolder {
-
-        ItemContainerRecentConversationBinding binding;
-
-        ConversationViewHolder(ItemContainerRecentConversationBinding itemContainerRecentConversationBinding) {
-            super(itemContainerRecentConversationBinding.getRoot());
-            binding = itemContainerRecentConversationBinding;
-        }
-
-        void setData(ChatMessage chatMessage) {
-            binding.imageProfile.setImageBitmap(getConversionImage(chatMessage.conversationImage));
-            binding.txtName.setText(chatMessage.conversationName);
-            binding.txtRecentMessage.setText(chatMessage.message);
-            binding.getRoot().setOnClickListener(v -> {
-                User user = new User();
-                user.id = chatMessage.conversationId;
-                user.name = chatMessage.conversationName;
-                user.image = chatMessage.conversationImage;
-                conversionListener.onConversionClicker(user);
-            });
+    inner class ConversationViewHolder(var binding: ItemContainerRecentConversationBinding) :
+        RecyclerView.ViewHolder(
+            binding.root
+        ) {
+        fun setData(chatMessage: ChatMessage) {
+            binding.imageProfile.setImageBitmap(getConversionImage(chatMessage.conversationImage))
+            binding.txtName.text = chatMessage.conversationName
+            binding.txtRecentMessage.text = chatMessage.message
+            binding.root.setOnClickListener { v: View? ->
+                val user = User()
+                user.id = chatMessage.conversationId
+                user.name = chatMessage.conversationName
+                user.image = chatMessage.conversationImage
+                conversionListener.onConversionClicker(user)
+            }
         }
     }
 
-    private Bitmap getConversionImage(String encodedImage) {
-        byte[] bytes = Base64.decode(encodedImage, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    private fun getConversionImage(encodedImage: String): Bitmap {
+        val bytes = Base64.decode(encodedImage, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
     }
 }

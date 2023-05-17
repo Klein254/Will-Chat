@@ -16,7 +16,7 @@ open class BaseActivity : AppCompatActivity() {
         )
         val database = FirebaseFirestore.getInstance()
         documentReference = database.collection(Constants.KEY_COLLECTION_USERS)
-            .document(preferenceManager.getString(Constants.KEY_USER_ID))
+            .document(preferenceManager.getString(Constants.KEY_USER_ID).toString())
     }
 
     override fun onPause() {
